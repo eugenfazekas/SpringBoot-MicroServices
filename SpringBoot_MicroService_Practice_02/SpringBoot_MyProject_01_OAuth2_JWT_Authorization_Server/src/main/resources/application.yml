@@ -1,0 +1,42 @@
+keystore:
+  password : ${KEYSTORE_PASSWORD}
+  privateKey : cronos.jks
+  alias : ${KEYSTORE_ALIAS}
+
+mysql:
+  url : ${MYSQL_URL}
+  username : ${MYSQL_USERNAME}
+  password : ${MYSQL_PASSWORD}
+  
+spring: 
+  mail:
+    host :  ${SPRING_MAIL_HOST}
+    port :  ${SPRING_MAIL_PORT}
+    username : ${SPRING_MAIL_USERNAME}
+    password : ${SPRING_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+
+emailservice:
+  subjecten : Demo Project account activation
+  text1en : Dear
+  text2en : "Thanks for you're registration to our website, and you can sign is with the followed username: "
+  text3en : You can activate you're account by the followed link    
+  validationLink: http://127.0.0.1:4800/user/userKeyCheck/    
+  
+client:
+  secret: ${CLIENT_SECRET}  
+  
+auth:
+  server:
+    base:
+      url : ${RESOURCE_SERVER_BASE_URL} 
+      
+resourceServer:
+  client-id: ${security.oauth2.client.client-id} 
+  client-secret: ${security.oauth2.client.client-secret} 
+        
+  
