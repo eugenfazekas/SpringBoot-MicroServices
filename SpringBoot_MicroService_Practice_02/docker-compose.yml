@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+            
+    authentication-server:
+        build: ./OAuth2_JWT_Authorization_Server
+        container_name: OAuth2_JWT_Authorization_Server
+        depends_on:
+                - postgres
+        environment: 
+            - SPRING_MAIL_HOST=${SPRING_MAIL_HOST}
+            - SPRING_MAIL_PORT=${SPRING_MAIL_PORT}
+            - SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME}
+            - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
+            - AUTHENTICATION_POSTGRES_URL=postgres:5432
+            - AUTHENTICATION_SERVER_DB=${AUTHENTICATION_SERVER_DB}
+            - AUTHENTICATION_SERVER_USERNAME=${AUTHENTICATION_SERVER_USERNAME}
+            - AUTHENTICATION_SERVER_PASSWORD=${AUTHENTICATION_SERVER_PASSWORD}
+            - KEYSTORE_ALIAS=${KEYSTORE_ALIAS}
+            - KEYSTORE_PASSWORD=${KEYSTORE_PASSWORD}
+            - RESOURCE_SERVER_BASE_URL=${RESOURCE_SERVER_BASE_URL}
+            - CLIENT_SECRET=${CLIENT_SECRET}
+            - SECURITY_OAUTH2_CLIENT_ID=${SECURITY_OAUTH2_CLIENT_ID} 
+            - SECURITY_OAUTH2_CLIENT_SECRET=${SECURITY_OAUTH2_CLIENT_SECRET} 
+        ports: 
+          - 4800:4800
+          
+    postgres:
+        image: "postgres:9.6-alpine"
+        volumes:
+            - crono-data:/var/lib/postgresql/data
+        environment: 
+           - POSTGRES_DB=${AUTHENTICATION_SERVER_DB}
+           - POSTGRES_USER=${AUTHENTICATION_SERVER_USERNAME}
+           - POSTGRES_PASSWORD=${AUTHENTICATION_SERVER_PASSWORD}
+        ports:
+            - 5432:5432           
+volumes:
+  crono-data:          
+          
+            
+     
