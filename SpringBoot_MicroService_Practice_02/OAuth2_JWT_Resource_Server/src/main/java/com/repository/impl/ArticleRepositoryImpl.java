@@ -2,6 +2,8 @@ package com.repository.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.CollectionOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,6 +20,7 @@ import com.repository.ArticleRepository;
 @Repository
 public class ArticleRepositoryImpl implements ArticleRepository {
 	
+	private final Logger log = LoggerFactory.getLogger(this.getClass()); 
 	 @Autowired
 	private MongoTemplate mongoTemplate;
 	 
@@ -39,13 +42,14 @@ public class ArticleRepositoryImpl implements ArticleRepository {
 			
 			 if(!mongoTemplate.collectionExists(ARTICLES_COLLECTON))
 			mongoTemplate.createCollection(ARTICLES_COLLECTON, CollectionOptions.empty().schema(schema));
-
+			log.debug("Articles Collection created");
 			}
 
 	@Override
 	public void dropArticleCollection() {
 		if(mongoTemplate.collectionExists(ARTICLES_COLLECTON))
 			mongoTemplate.dropCollection(ARTICLES_COLLECTON);
+		    log.debug("Articles Collection deleted");
 	}
 	
 	@Override

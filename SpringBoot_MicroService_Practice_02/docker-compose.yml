@@ -1,12 +1,23 @@
 version: '3.8'
 
 services:
+         
+    postgres:
+        image: "postgres:9.6-alpine"
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        environment: 
+            - POSTGRES_DB=${AUTHENTICATION_SERVER_DB}
+            - POSTGRES_USER=${AUTHENTICATION_SERVER_USERNAME}
+            - POSTGRES_PASSWORD=${AUTHENTICATION_SERVER_PASSWORD}
+        ports:
+            - "5432:5432"    
             
-    authentication-server:
+    authenticationserver:
         build: ./OAuth2_JWT_Authorization_Server
         container_name: OAuth2_JWT_Authorization_Server
         depends_on:
-                - postgres
+            - "postgres"
         environment: 
             - SPRING_MAIL_HOST=${SPRING_MAIL_HOST}
             - SPRING_MAIL_PORT=${SPRING_MAIL_PORT}
@@ -18,25 +29,48 @@ services:
             - AUTHENTICATION_SERVER_PASSWORD=${AUTHENTICATION_SERVER_PASSWORD}
             - KEYSTORE_ALIAS=${KEYSTORE_ALIAS}
             - KEYSTORE_PASSWORD=${KEYSTORE_PASSWORD}
-            - RESOURCE_SERVER_BASE_URL=${RESOURCE_SERVER_BASE_URL}
+            - RESOURCE_SERVER_BASE_URL=resource_server:8080
             - CLIENT_SECRET=${CLIENT_SECRET}
             - SECURITY_OAUTH2_CLIENT_ID=${SECURITY_OAUTH2_CLIENT_ID} 
-            - SECURITY_OAUTH2_CLIENT_SECRET=${SECURITY_OAUTH2_CLIENT_SECRET} 
-        ports: 
-          - 4800:4800
-          
-    postgres:
-        image: "postgres:9.6-alpine"
-        volumes:
-            - crono-data:/var/lib/postgresql/data
-        environment: 
-           - POSTGRES_DB=${AUTHENTICATION_SERVER_DB}
-           - POSTGRES_USER=${AUTHENTICATION_SERVER_USERNAME}
-           - POSTGRES_PASSWORD=${AUTHENTICATION_SERVER_PASSWORD}
+            - SECURITY_OAUTH2_CLIENT_SECRET=${SECURITY_OAUTH2_CLIENT_SECRET}
         ports:
-            - 5432:5432           
+            - "4800"     
+   
+
+    mongodb:
+        image: mongo
+        container_name: mongodb
+        depends_on:
+            - "postgres"
+            - "authenticationserver"
+        volumes:
+            - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+            - mongodata:/data/db
+        environment:
+            - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
+            - MONGO_INITDB_ROOT_USERNAME=${MONGO_SERVER_USER}
+            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_SERVER_PASSWORD}
+        ports:
+            - "27017:27017"
+        
+    resource_server:
+        build: ./OAuth2_JWT_Resource_Server
+        container_name: OAuth2_JWT_Resource_Server
+        depends_on:
+            - "mongodb"
+            - "authenticationserver"  
+        environment: 
+            - MONGO_DB_HOST=mongodb:27017
+            - MONGO_DATABASE=${MONGO_DATABASE}
+            - MONGO_USERNAME=${MONGO_USERNAME}
+            - MONGO_PASSWORD=${MONGO_PASSWORD}
+            - MONGO_PORT=${MONGO_PORT}
+            - SECURITY_OAUTH2_CLIENT_ID=${SECURITY_OAUTH2_CLIENT_ID}
+            - SECURITY_OAUTH2_CLIENT_SECRET=${SECURITY_OAUTH2_CLIENT_SECRET}
+            - SECURITY_OAUTH2_RESOURCE_JWT_KEY_URI=http://authenticationserver:4800/oauth/token_key
+            
 volumes:
-  crono-data:          
-          
+    pgdata:          
+    mongodata:     
             
      

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class OAuth2JwtResourceServerApplicationTests {
+class SpringBootMyProject01OAuth2JwtResourceServerApplicationTests {
 
 	@Test
 	void contextLoads() {

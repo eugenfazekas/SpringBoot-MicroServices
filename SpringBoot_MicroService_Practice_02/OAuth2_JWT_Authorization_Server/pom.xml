@@ -11,8 +11,8 @@
 	<groupId>com</groupId>
 	<artifactId>SpringBoot_MyProject_01_OAuth2_JWT_Authorization_Server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>SpringBoot_MyProject_01_OAuth2_JWT_Authorization_Server</name>
-	<description>SpringBoot_MyProject_01_OAuth2_JWT_Authorization_Server</description>
+	<name>OAuth2_JWT_Authorization_Server</name>
+	<description>OAuth2_JWT_Authorization_Server</description>
 	<properties>
 		<java.version>11</java.version>
 		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>

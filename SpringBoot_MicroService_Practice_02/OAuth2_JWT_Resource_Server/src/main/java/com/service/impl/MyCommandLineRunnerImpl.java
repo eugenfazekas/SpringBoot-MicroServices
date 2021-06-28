@@ -29,7 +29,12 @@ public class MyCommandLineRunnerImpl implements MyCommandLineRunner, CommandLine
 	@Override
 	public void run(String... args) throws Exception {
 		dropCollectionUsers();
+		dropCollectionArticles();
+		dropCollectionCategories();
 		createCollectionUsers();
+		createCollectionArticles();
+		createCollectionCategories();
+		importDummyJsonArticles();
 	}
 	
 	@Override

@@ -1,5 +1,7 @@
 package com.repository.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.CollectionOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -17,6 +19,8 @@ import com.repository.CategoriesRepository;
 @Repository
 public class CategoriesRepositoryImpl implements CategoriesRepository{
 	
+	private final Logger log = LoggerFactory.getLogger(this.getClass()); 
+	
 	 @Autowired
 		private MongoTemplate mongoTemplate;
 		private final String CATEGORIES_COLLECTION = "categories"; 
@@ -32,13 +36,14 @@ public class CategoriesRepositoryImpl implements CategoriesRepository{
 				
 				 if(!mongoTemplate.collectionExists("categories"))
 				mongoTemplate.createCollection(CATEGORIES_COLLECTION, CollectionOptions.empty().schema(schema));
-
+				log.debug("Categories Collection created");
 		}
 		
 		@Override
 		public void dropCategoriesCollection() {
 			if(mongoTemplate.collectionExists(CATEGORIES_COLLECTION))
 				mongoTemplate.dropCollection(CATEGORIES_COLLECTION);
+				log.debug("Categories Collection deleted");
 		}
 		
 		@Override

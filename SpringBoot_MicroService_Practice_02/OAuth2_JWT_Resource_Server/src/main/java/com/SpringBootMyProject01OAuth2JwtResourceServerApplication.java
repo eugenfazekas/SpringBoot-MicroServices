@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OAuth2JwtResourceServerApplication {
+public class SpringBootMyProject01OAuth2JwtResourceServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OAuth2JwtResourceServerApplication.class, args);
+		SpringApplication.run(SpringBootMyProject01OAuth2JwtResourceServerApplication.class, args);
 	}
 
 }

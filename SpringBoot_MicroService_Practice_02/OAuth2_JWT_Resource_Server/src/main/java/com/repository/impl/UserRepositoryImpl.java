@@ -49,7 +49,7 @@ public class UserRepositoryImpl implements UserRepository{
 		
 		 if(!mongoTemplate.collectionExists(USERS_COLLECTION))
 		mongoTemplate.createCollection(USERS_COLLECTION, CollectionOptions.empty().schema(schema));
-
+		log.debug("Users Collection created");
 		}
 
 	@Override
@@ -57,6 +57,7 @@ public class UserRepositoryImpl implements UserRepository{
 		
 		if(mongoTemplate.collectionExists(USERS_COLLECTION))
 		mongoTemplate.dropCollection(USERS_COLLECTION);
+		 log.debug("Users Collection deleted");
 	}
 
 	@Override
