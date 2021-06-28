@@ -39,7 +39,7 @@ public class MyProjectCommandLineRunnerImpl implements CommandLineRunner, MyProj
 		createAccountKeyTable();
 		dropOtpTable();
 		createOtpTable();
-		//createDummyUser();
+		createDummyUser();
 	}
 
 	public void createUsersTable() {
@@ -51,32 +51,24 @@ public class MyProjectCommandLineRunnerImpl implements CommandLineRunner, MyProj
 	}
 
 	public void createDummyUser() {
-		
-		try {
-			TimeUnit.SECONDS.sleep(10);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		User user = new User();
-		UUID uuid = UUID.randomUUID();	
-		user.setId(uuid.toString());
+
+		User user = new User();	
+		user.setId("bbf7f3f5-3d94-4ca9-9515-aafff26f9c8d");
 		user.setEmail("eu@fa.hu");
 	    user.setPassword(new BCryptPasswordEncoder().encode("myPassword"));
 	    user.setActive(true);
 	    user.setMfa(false);
 		userRepository.registerUser(user, "user");
-		proxyServer.sendNewUserId(userRepository.findByEmail(user.getEmail()).getId());  
+		//proxyServer.sendNewUserId(userRepository.findByEmail(user.getEmail()).getId());  
 		
 		User user2 = new User();
-		UUID uuid2 = UUID.randomUUID();	
-		user2.setId(uuid2.toString());
+		user2.setId("884380f6-70cc-49f1-9135-532c3be6adda");
 		user2.setEmail("admin@fa.hu");
 	    user2.setPassword(new BCryptPasswordEncoder().encode("myAdmin"));
 	    user2.setActive(true);
 	    user2.setMfa(true);
 		userRepository.registerUser(user2, "user admin");
-		proxyServer.sendNewUserId(userRepository.findByEmail(user2.getEmail()).getId()); 
+		//proxyServer.sendNewUserId(userRepository.findByEmail(user2.getEmail()).getId()); 
 	}
 
 	@Override

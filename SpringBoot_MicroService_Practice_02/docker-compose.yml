@@ -4,6 +4,7 @@ services:
          
     postgres:
         image: "postgres:9.6-alpine"
+        container_name: postgresdb
         volumes:
             - pgdata:/var/lib/postgresql/data
         environment: 
@@ -34,15 +35,11 @@ services:
             - SECURITY_OAUTH2_CLIENT_ID=${SECURITY_OAUTH2_CLIENT_ID} 
             - SECURITY_OAUTH2_CLIENT_SECRET=${SECURITY_OAUTH2_CLIENT_SECRET}
         ports:
-            - "4800"     
+            - "4800:4800"     
    
-
     mongodb:
         image: mongo
         container_name: mongodb
-        depends_on:
-            - "postgres"
-            - "authenticationserver"
         volumes:
             - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
             - mongodata:/data/db
@@ -53,12 +50,13 @@ services:
         ports:
             - "27017:27017"
         
-    resource_server:
+    resourceserver:
         build: ./OAuth2_JWT_Resource_Server
         container_name: OAuth2_JWT_Resource_Server
         depends_on:
-            - "mongodb"
-            - "authenticationserver"  
+            - "postgres"
+            - "authenticationserver" 
+            - "mongodb"          
         environment: 
             - MONGO_DB_HOST=mongodb:27017
             - MONGO_DATABASE=${MONGO_DATABASE}
@@ -68,7 +66,23 @@ services:
             - SECURITY_OAUTH2_CLIENT_ID=${SECURITY_OAUTH2_CLIENT_ID}
             - SECURITY_OAUTH2_CLIENT_SECRET=${SECURITY_OAUTH2_CLIENT_SECRET}
             - SECURITY_OAUTH2_RESOURCE_JWT_KEY_URI=http://authenticationserver:4800/oauth/token_key
+        ports:
+            - "8080:8080"     
             
+    angularui:
+        build: ./Angular_Ui
+        container_name: Angular_Ui
+        depends_on:
+            - "postgres"
+            - "authenticationserver" 
+            - "mongodb" 
+            - "resourceserver"
+        ports:
+          - "4200:80" 
+        links:
+            - "authenticationserver"
+            - "resourceserver"
+          
 volumes:
     pgdata:          
     mongodata:     

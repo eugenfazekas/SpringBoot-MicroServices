@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.Article;
+import com.model.ProxyUser;
 import com.service.ArticleService;
 import com.service.CategoriesService;
 import com.service.MyCommandLineRunner;
@@ -35,6 +36,7 @@ public class MyCommandLineRunnerImpl implements MyCommandLineRunner, CommandLine
 		createCollectionArticles();
 		createCollectionCategories();
 		importDummyJsonArticles();
+		creatDummyUsers();
 	}
 	
 	@Override
@@ -101,5 +103,17 @@ public class MyCommandLineRunnerImpl implements MyCommandLineRunner, CommandLine
 			System.out.println(e);
 		}
 	
+	}
+	
+	public void creatDummyUsers() {
+		
+		ProxyUser user = new ProxyUser();
+		
+		user.setId("bbf7f3f5-3d94-4ca9-9515-aafff26f9c8d");
+		userservice.createUser(user);	
+		
+		user.setId("884380f6-70cc-49f1-9135-532c3be6adda");
+		userservice.createUser(user);	
+
 	}
 }
