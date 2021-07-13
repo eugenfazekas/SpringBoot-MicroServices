@@ -10,19 +10,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.model.License;
 import com.services.LicenseService;
+import com.utils.UserContextHolder;
 
 @RestController
 @RequestMapping(value="v1/organizations/{organizationId}/licenses")
 public class LicenseServiceController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(LicenseServiceController.class);
+	
     @Autowired
     private LicenseService licenseService;
 
     @RequestMapping(value="/",method = RequestMethod.GET)
     public List<License> getLicenses( @PathVariable("organizationId") String organizationId) {
-
+        logger.debug("LicenseServiceController Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
         return licenseService.getLicensesByOrg(organizationId);
     }
 
@@ -30,15 +35,7 @@ public class LicenseServiceController {
     public License getLicenses( @PathVariable("organizationId") String organizationId,
                                 @PathVariable("licenseId") String licenseId) {
 
-        return licenseService.getLicense(organizationId, licenseId, "");
-    }
-
-    @RequestMapping(value="/{licenseId}/{clientType}",method = RequestMethod.GET)
-    public License getLicensesWithClient( @PathVariable("organizationId") String organizationId,
-                                          @PathVariable("licenseId") String licenseId,
-                                          @PathVariable("clientType") String clientType) {
-
-        return licenseService.getLicense(organizationId,licenseId, clientType);
+        return licenseService.getLicense(organizationId, licenseId);
     }
 
     @RequestMapping(value="{licenseId}",method = RequestMethod.PUT)
