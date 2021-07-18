@@ -1,15 +1,5 @@
 package com.services;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.clients.OrganizationRestTemplateClient;
 import com.config.ServiceConfig;
 import com.model.License;
@@ -17,11 +7,18 @@ import com.model.Organization;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.repository.LicenseRepository;
-import com.utils.UserContextHolder;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class LicenseService {
-    private static final Logger logger = LoggerFactory.getLogger(LicenseService.class);
+
     @Autowired
     private LicenseRepository licenseRepository;
 
@@ -36,7 +33,6 @@ public class LicenseService {
         License license = licenseRepository.findByOrganizationIdAndLicenseId(organizationId, licenseId);
 
         Organization org = getOrganization(organizationId);
-
         return license
                 .withOrganizationName( org.getName())
                 .withContactName( org.getContactName())
@@ -47,8 +43,6 @@ public class LicenseService {
 
     @HystrixCommand
     private Organization getOrganization(String organizationId) {
-    	logger.debug("Orgin organizationId "+organizationId);
-    	logger.debug("organizationRestClient.getOrganization(organizationId) " + organizationRestClient.getOrganization(organizationId));
         return organizationRestClient.getOrganization(organizationId);
     }
 
@@ -62,17 +56,19 @@ public class LicenseService {
 
     private void sleep(){
         try {
-            Thread.sleep(11000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    @HystrixCommand(//fallbackMethod = "buildFallbackLicenseList",
+
+    @HystrixCommand(fallbackMethod = "buildFallbackLicenseList",
             threadPoolKey = "licenseByOrgThreadPool",
             threadPoolProperties =
                     {@HystrixProperty(name = "coreSize",value="30"),
-                     @HystrixProperty(name="maxQueueSize", value="10")},
+                     @HystrixProperty(name="maxQueueSize", value="10"),
+                   },
             commandProperties={
                      @HystrixProperty(name="circuitBreaker.requestVolumeThreshold", value="10"),
                      @HystrixProperty(name="circuitBreaker.errorThresholdPercentage", value="75"),
@@ -81,8 +77,8 @@ public class LicenseService {
                      @HystrixProperty(name="metrics.rollingStats.numBuckets", value="5")}
     )
     public List<License> getLicensesByOrg(String organizationId){
-        logger.debug("LicenseService.getLicensesByOrg  Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
         randomlyRunLong();
+
         return licenseRepository.findByOrganizationId(organizationId);
     }
 

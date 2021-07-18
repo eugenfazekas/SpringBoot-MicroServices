@@ -1,10 +1,7 @@
 package com.hystrix;
 
-
-
 import com.utils.UserContext;
 import com.utils.UserContextHolder;
-
 import java.util.concurrent.Callable;
 
 
@@ -19,7 +16,7 @@ public final class DelegatingUserContextCallable<V> implements Callable<V> {
     }
 
     public V call() throws Exception {
-        UserContextHolder.setContext(originalUserContext);
+        UserContextHolder.setContext( originalUserContext );
 
         try {
             return delegate.call();

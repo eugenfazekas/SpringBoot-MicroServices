@@ -1,7 +1,5 @@
 package com.hystrix;
 
-
-
 import com.utils.UserContext;
 import com.utils.UserContextHolder;
 

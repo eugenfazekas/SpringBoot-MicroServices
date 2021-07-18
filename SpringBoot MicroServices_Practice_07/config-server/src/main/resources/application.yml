@@ -19,7 +19,7 @@ spring:
         encrypt.enabled: false
         git:
           uri: https://github.com/eugenfazekas/Config-Repo/
-          searchPaths: licensingservice,organizationservice,specialroutesservice,zuulservice
+          searchPaths: licensingservice,organizationservice,specialroutesservice,zuulservice,authenticationservice
           username: native-cloud-apps
           password: 0ffended
 
