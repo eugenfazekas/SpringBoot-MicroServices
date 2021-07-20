@@ -3,8 +3,9 @@ spring:
     name: organizationservice
   profiles:
     active:
-      default
+      ${CONFIG_MODE}
   cloud:
     config:
+      uri: ${CLOUD_CONFIG_SERVER}
       enabled: true
       

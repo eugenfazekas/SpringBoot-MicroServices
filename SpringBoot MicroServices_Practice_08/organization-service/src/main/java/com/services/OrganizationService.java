@@ -1,5 +1,6 @@
 package com.services;
 
+import com.events.source.SimpleSourceBean;
 import com.model.Organization;
 import com.repository.OrganizationRepository;
 
@@ -13,6 +14,9 @@ public class OrganizationService {
     @Autowired
     private OrganizationRepository orgRepository;
 
+    @Autowired
+    SimpleSourceBean simpleSourceBean;
+
     public Organization getOrg(String organizationId) {
         return orgRepository.findById(organizationId);
     }
@@ -21,14 +25,17 @@ public class OrganizationService {
         org.setId( UUID.randomUUID().toString());
 
         orgRepository.save(org);
-
+      //  simpleSourceBean.publishOrgChange("SAVE", org.getId());
     }
 
     public void updateOrg(Organization org){
         orgRepository.save(org);
+      //  simpleSourceBean.publishOrgChange("UPDATE", org.getId());
+
     }
 
-    public void deleteOrg(Organization org){
-        orgRepository.delete( org.getId());
+    public void deleteOrg(String  orgId){
+        orgRepository.delete( orgId );
+      //  simpleSourceBean.publishOrgChange("DELETE", orgId);
     }
 }

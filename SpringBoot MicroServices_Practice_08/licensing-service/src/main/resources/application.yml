@@ -5,10 +5,23 @@ eureka:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${CLOUD_EUREKA_SERVER}
 
 logging:
   level:
     com.netflix: WARN
     org.springframework.web: WARN
-    com: DEBUG      
+    com: DEBUG  
+    
+spring:
+  cloud:
+    stream:
+      bindings:
+        inboundOrgChanges:
+          destination: orgChangeTopic
+          content-type: application/json
+          group: licensingGroup
+      kafka:
+        binder:
+          zkNodes: zookeeper
+          brokers: kafka         

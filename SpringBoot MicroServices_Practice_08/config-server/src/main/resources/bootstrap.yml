@@ -1,4 +1,13 @@
 spring:
   application:
     name: configserver
+    
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: ${CLOUD_EUREKA_SERVER}    
 
