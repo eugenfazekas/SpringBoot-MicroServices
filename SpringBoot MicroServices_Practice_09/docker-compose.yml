@@ -1,0 +1,87 @@
+version: '2'
+services:
+  eurekaserver:
+   build: ./eurekasvr/target/
+   ports:
+       - "8761:8761"
+   mem_limit: 1024m
+   mem_reservation: 128M    
+  configserver:
+    build: ./confsvr/target/
+    ports:
+       - "8888:8888"
+    environment:
+       EUREKASERVER_URI: "http://eurekaserver:8761/eureka/"
+       EUREKASERVER_PORT: "8761"
+       ENCRYPT_KEY:       "IMSYMMETRIC"
+  zuulserver:
+    build: ./zuulsvr/target/
+    ports:
+      - "5555:5555"
+    environment:
+      PROFILE: "dev"
+      SERVER_PORT: "5555"
+      CONFIGSERVER_URI: "http://configserver:8888"
+      EUREKASERVER_URI: "http://eurekaserver:8761/eureka/"
+      DATABASESERVER_PORT: "5432"
+      EUREKASERVER_PORT:   "8761"
+      CONFIGSERVER_PORT:   "8888"
+    mem_limit: 1024m
+    mem_reservation: 128M    
+  postgres_database:
+    image: postgres:9.5
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "e21Wz44"
+      POSTGRES_DB:       "POSTGRESQL"
+  licensingservice:
+    build: ./licensing-service/target/
+    ports:
+      - "8080:8080"
+    mem_limit: 1024m
+    mem_reservation: 128M
+    environment:
+      PROFILE: "dev"
+      SERVER_PORT: "8080"
+      CONFIGSERVER_URI: "http://configserver:8888"
+      EUREKASERVER_URI: "http://eurekaserver:8761/eureka/"
+      KAFKASERVER_URI: "kafkaserver"
+      ZKSERVER_URI: "kafkaserver"
+      DATABASESERVER_PORT: "5432"
+      EUREKASERVER_PORT:   "8761"
+      CONFIGSERVER_PORT:   "8888"
+      ZUULSERVER_PORT:     "5555"
+      KAFKASERVER_PORT:    "2181"
+      REDIS_PORT:          "6379"
+      ENCRYPT_KEY:       "IMSYMMETRIC"
+  organizationservice:
+    build: ./organization-service/target/
+    ports:
+      - "8085:8085"
+    environment:
+      PROFILE: "dev"
+      SERVER_PORT: "8085"
+      CONFIGSERVER_URI: "http://configserver:8888"
+      EUREKASERVER_URI: "http://eurekaserver:8761/eureka/"
+      KAFKASERVER_URI: "kafkaserver"
+      ZKSERVER_URI: "kafkaserver"
+      DATABASESERVER_PORT: "5432"
+      EUREKASERVER_PORT:   "8761"
+      CONFIGSERVER_PORT:   "8888"
+      ZUULSERVER_PORT:     "5555"
+      KAFKASERVER_PORT:    "2181"
+      ENCRYPT_KEY:       "IMSYMMETRIC"
+    mem_limit: 1024m
+    mem_reservation: 128M  
+      
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+  kafkaserver:
+    image: spotify/kafka
+    ports:
+      - 2181:2181
+      - 9092:9092

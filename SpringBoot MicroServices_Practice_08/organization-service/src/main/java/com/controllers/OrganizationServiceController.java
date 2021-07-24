@@ -3,7 +3,10 @@ package com.controllers;
 
 import com.model.Organization;
 import com.services.OrganizationService;
+import com.utils.UserContextHolder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,21 +16,31 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+
+
+
+
+
 @RestController
 @RequestMapping(value="v1/organizations")
 public class OrganizationServiceController {
-    @Autowired
+	@Autowired
     private OrganizationService orgService;
-
+    private static final Logger logger = LoggerFactory.getLogger(OrganizationServiceController.class);
 
     @RequestMapping(value="/{organizationId}",method = RequestMethod.GET)
     public Organization getOrganization( @PathVariable("organizationId") String organizationId) {
-        return orgService.getOrg(organizationId);
+      logger.debug("Looking up data for org {} with correlation id {}", organizationId, UserContextHolder.getContext().getCorrelationId());
+
+        Organization org = orgService.getOrg(organizationId);
+        org.setContactName(org.getContactName());
+        return org;
     }
 
     @RequestMapping(value="/{organizationId}",method = RequestMethod.PUT)
     public void updateOrganization( @PathVariable("organizationId") String orgId, @RequestBody Organization org) {
         orgService.updateOrg( org );
+
     }
 
     @RequestMapping(value="/{organizationId}",method = RequestMethod.POST)
@@ -37,7 +50,7 @@ public class OrganizationServiceController {
 
     @RequestMapping(value="/{organizationId}",method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteOrganization( @PathVariable("orgId") String orgId,  @RequestBody Organization org) {
+    public void deleteOrganization( @PathVariable("organizationId") String orgId) {
         orgService.deleteOrg( orgId );
     }
 }

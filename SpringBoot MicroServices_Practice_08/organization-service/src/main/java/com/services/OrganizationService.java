@@ -3,7 +3,6 @@ package com.services;
 import com.events.source.SimpleSourceBean;
 import com.model.Organization;
 import com.repository.OrganizationRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,17 +24,17 @@ public class OrganizationService {
         org.setId( UUID.randomUUID().toString());
 
         orgRepository.save(org);
-      //  simpleSourceBean.publishOrgChange("SAVE", org.getId());
+        simpleSourceBean.publishOrgChange("SAVE", org.getId());
     }
 
     public void updateOrg(Organization org){
         orgRepository.save(org);
-      //  simpleSourceBean.publishOrgChange("UPDATE", org.getId());
+        simpleSourceBean.publishOrgChange("UPDATE", org.getId());
 
     }
 
     public void deleteOrg(String  orgId){
         orgRepository.delete( orgId );
-      //  simpleSourceBean.publishOrgChange("DELETE", orgId);
+        simpleSourceBean.publishOrgChange("DELETE", orgId);
     }
 }

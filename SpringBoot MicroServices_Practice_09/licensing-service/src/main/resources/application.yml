@@ -1,0 +1,34 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        inboundOrgChanges:
+          destination: orgChangeTopic
+          content-type: application/json
+          group: licensingGroup
+      kafka:
+        binder:
+          zkNodes: kafka
+          brokers: kafka
+          
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: ${CLOUD_EUREKA_SERVER}
+
+logging:
+  level:
+    com.netflix: WARN
+    org.springframework.web: WARN
+    com: DEBUG  
+      
+          
+ #        inboundOrgChanges:
+#          destination: orgChangeTopic
+#          content-type: application/json
+#          group: licensingGroup
+#          COmment in comment out ctrl /      

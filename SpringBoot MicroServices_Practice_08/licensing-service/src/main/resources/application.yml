@@ -1,3 +1,16 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        inboundOrgChanges:
+          destination: orgChangeTopic
+          content-type: application/json
+          group: licensingGroup
+      kafka:
+        binder:
+          zkNodes: kafkaserver
+          brokers: kafkaserver
+          
 eureka:
   instance:
     preferIpAddress: true
@@ -12,16 +25,10 @@ logging:
     com.netflix: WARN
     org.springframework.web: WARN
     com: DEBUG  
-    
-spring:
-  cloud:
-    stream:
-      bindings:
-        inboundOrgChanges:
-          destination: orgChangeTopic
-          content-type: application/json
-          group: licensingGroup
-      kafka:
-        binder:
-          zkNodes: zookeeper
-          brokers: kafka         
+      
+          
+ #        inboundOrgChanges:
+#          destination: orgChangeTopic
+#          content-type: application/json
+#          group: licensingGroup
+#          COmment in comment out ctrl /      
