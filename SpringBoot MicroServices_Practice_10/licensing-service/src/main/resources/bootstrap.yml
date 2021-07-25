@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: licensingservice
+  profiles:
+    active: ${CONFIG_MODE}
+  cloud:
+    config:
+      uri: ${CLOUD_CONFIG_SERVER}
+      enabled: true
+#      discovery:
+#        enabled: true
+#        serviceId: configserver

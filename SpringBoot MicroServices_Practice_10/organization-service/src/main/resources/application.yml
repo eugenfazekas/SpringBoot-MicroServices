@@ -1,0 +1,32 @@
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+        defaultZone: ${CLOUD_EUREKA_SERVER}
+        
+server:
+  port: 8100  
+  
+spring:
+  cloud:
+    stream:
+      bindings:
+        output:
+            destination:  orgChangeTopic
+            content-type: application/json
+      kafka:
+        binder:
+          zkNodes: kafkaserver
+          brokers: kafkaserver
+          
+logging:
+  level:
+    com.netflix: WARN
+    org.springframework.web: WARN
+    com: DEBUG            
+        
+
+        

@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+    postgres_database:
+        image: postgres:latest
+        ports:
+          - "5432:5432"
+        environment:
+          POSTGRES_USER: "postgres"
+          POSTGRES_PASSWORD: "e21Wz44"
+          POSTGRES_DB:       "POSTGRESQL"
+        volumes:
+            - ./licensing-service/src/main/resources/schema.sql:/docker-entrypoint-schema.d/1-schema.sql
+            - ./organization-service/src/main/resources/schema.sql:/docker-entrypoint-schema.d/2-schema.sql
+        healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U postgres"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
+     
+    redisserver:
+        image: redis:alpine
+        container_name: redis
+        ports:
+          - 6379:6379
+                
+    kafkaserver:
+        image: spotify/kafka
+        ports:
+          - 2181:2181
+          - 9092:9092
+     
+    eurekaserver:
+        build: ./eureka-server
+        ports:
+          - "8761:8761"
+        depends_on:
+          postgres_database:
+            condition: service_started  
+        healthcheck:
+          test: curl --fail http://localhost:8761/health || exit 1
+          interval: 1s
+          timeout: 3s
+          retries: 30 
+          start_period: 30s    
+        mem_limit: 1024m
+        mem_reservation: 128M
+
+    configserver:
+        build: ./config-server
+        depends_on:
+          eurekaserver:
+            condition: service_started 
+          kafkaserver:
+            condition: service_started
+        environment:
+          CLOUD_EUREKA_SERVER: "http://eurekaserver:8761/eureka/"            
+        ports:
+           - "8888:8888" 
+        healthcheck:
+          test: curl --fail http://localhost:8888/health || exit 1
+          interval: 1s
+          timeout: 3s
+          retries: 30 
+          start_period: 30s
+        mem_limit: 1024m
+        mem_reservation: 128M      
+        
+    zoolserver:
+        build: ./zuul-server
+        ports:
+          - "5555:5555"
+        environment:
+          CLOUD_CONFIG_SERVER: "http://configserver:8888"
+          CLOUD_EUREKA_SERVER: "http://eurekaserver:8761/eureka/"
+        depends_on:
+          configserver:
+            condition: service_healthy
+        mem_limit: 1024m
+        mem_reservation: 128M
+  
+    licensingservice:
+        build: ./licensing-service
+        environment:
+          CONFIG_MODE: "dev"
+          ENCRYPT_KEY: "IMSYMMETRIC" 
+          CLOUD_CONFIG_SERVER: "http://configserver:8888"
+          CLOUD_EUREKA_SERVER: "http://eurekaserver:8761/eureka/"
+          CLOUD_KAFKA_SERVER: "kafkaserver"
+        depends_on:
+          configserver:
+            condition: service_healthy
+        ports:
+          - "8080:8080"
+        mem_limit: 1024m
+        mem_reservation: 128M
+      
+    organizationservice:
+        build: ./organization-service
+        environment:
+          CONFIG_MODE: "dev"
+          ENCRYPT_KEY: "IMSYMMETRIC"   
+          CLOUD_CONFIG_SERVER: "http://configserver:8888"
+          CLOUD_EUREKA_SERVER: "http://eurekaserver:8761/eureka/"
+          CLOUD_KAFKA_SERVER: "kafkaserver"
+        depends_on:
+          configserver:
+            condition: service_healthy
+          kafkaserver:
+            condition: service_started  
+        ports:
+          - "8100:8100"  
+          
+        mem_limit: 1024m
+        mem_reservation: 128M
+   
+              

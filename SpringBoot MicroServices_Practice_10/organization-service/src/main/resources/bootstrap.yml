@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: organizationservice
+  profiles: 
+    active: ${CONFIG_MODE}
+  cloud:
+    config: 
+      uri: ${CLOUD_CONFIG_SERVER}
+      enabled: true
+      

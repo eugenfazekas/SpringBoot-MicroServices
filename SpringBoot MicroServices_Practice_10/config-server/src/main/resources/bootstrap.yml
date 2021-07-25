@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: configserver
+    
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${CLOUD_EUREKA_SERVER}    
+      
