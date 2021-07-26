@@ -73,11 +73,22 @@ services:
         environment:
           CLOUD_CONFIG_SERVER: "http://configserver:8888"
           CLOUD_EUREKA_SERVER: "http://eurekaserver:8761/eureka/"
+          ZIPKIN_HOST: "http://zipkinserver:9411"
         depends_on:
           configserver:
             condition: service_healthy
         mem_limit: 1024m
         mem_reservation: 128M
+        
+    zipkinserver:
+        build: ./zipkin-server
+        ports:
+          - "9411:9411"
+        depends_on:
+          configserver:
+            condition: service_healthy
+        mem_limit: 1024m
+        mem_reservation: 128M    
   
     licensingservice:
         build: ./licensing-service
@@ -87,6 +98,7 @@ services:
           CLOUD_CONFIG_SERVER: "http://configserver:8888"
           CLOUD_EUREKA_SERVER: "http://eurekaserver:8761/eureka/"
           CLOUD_KAFKA_SERVER: "kafkaserver"
+          ZIPKIN_HOST: "http://zipkinserver:9411"
         depends_on:
           configserver:
             condition: service_healthy
@@ -103,6 +115,7 @@ services:
           CLOUD_CONFIG_SERVER: "http://configserver:8888"
           CLOUD_EUREKA_SERVER: "http://eurekaserver:8761/eureka/"
           CLOUD_KAFKA_SERVER: "kafkaserver"
+          ZIPKIN_HOST: "http://zipkinserver:9411"
         depends_on:
           configserver:
             condition: service_healthy

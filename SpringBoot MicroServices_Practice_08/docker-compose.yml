@@ -90,6 +90,8 @@ services:
         depends_on:
           configserver:
             condition: service_healthy
+          postgres_database:
+            condition: service_healthy  
         ports:
           - "8080:8080"
         mem_limit: 1024m
@@ -107,7 +109,9 @@ services:
           configserver:
             condition: service_healthy
           kafkaserver:
-            condition: service_started  
+            condition: service_started
+          postgres_database:
+            condition: service_healthy          
         ports:
           - "8100:8100"  
           

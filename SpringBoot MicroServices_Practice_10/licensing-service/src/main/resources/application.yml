@@ -1,4 +1,6 @@
 spring:
+  zipkin:
+    baseUrl:  ${ZIPKIN_HOST} 
   cloud:
     stream:
       bindings:

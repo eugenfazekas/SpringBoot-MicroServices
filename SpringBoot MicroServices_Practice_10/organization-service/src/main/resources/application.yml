@@ -11,6 +11,8 @@ server:
   port: 8100  
   
 spring:
+  zipkin:
+    baseUrl:  ${ZIPKIN_HOST} 
   cloud:
     stream:
       bindings:

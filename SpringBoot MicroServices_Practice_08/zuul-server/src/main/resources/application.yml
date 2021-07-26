@@ -16,6 +16,8 @@ logging:
     com.netflix: WARN
     org.springframework.web: WARN
     com: DEBUG  
+    
+   
   #Setting logging levels
   
 #zuul:
